@@ -1,0 +1,35 @@
+# Name of our workflow
+name: C++ CI
+
+# When to run this workflow
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    # The type of machine to run the job on
+    # We use a matrix to test on all major operating systems
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    # Step 1: Download our code from the repository
+    - uses: actions/checkout@v4
+
+    # Step 2: Configure the CMake project
+    - name: Configure CMake
+      run: cmake -B build
+
+    # Step 3: Build the project
+    - name: Build
+      run: cmake --build build
+
+    # Step 4: Run the tests
+    - name: Test
+      run: ctest --test-dir build
+
